@@ -37,5 +37,6 @@ def run():
     epochs = 1000
     print("done")
 
-if '__name__' == "__main__":
+if __name__ == "__main__":
     run()
+

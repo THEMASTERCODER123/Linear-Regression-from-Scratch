@@ -11,5 +11,5 @@ def genXY(equation, noOfPairs):
         cntr += 1
     return list_of_pair_xy
 
-print(genXY(function_x, 500))
+#print(genXY(function_x, 500))
 
