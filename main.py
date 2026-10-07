@@ -13,8 +13,8 @@ def noisy_gen_XY(equation, noOfPairs):
     for i in range(noOfPairs):
         x = cntr
         y = equation(x)
-        noisy_x = x + random.random()
-        noisy_y = y + random.random()
+        noisy_x = x + random.uniform(random.random(), 1)
+        noisy_y = y + random.uniform(random.random(), 1)
         list_of_pair_xy.append([noisy_x, noisy_y])
         x_list.append(noisy_x)
         y_list.append(noisy_y)
@@ -81,12 +81,12 @@ def gradients(x_list, y_list, predictions):
     return m_gradient, b_gradient
 
 def plot(x_list, y_list, function):
-    #plt.ion()
+    plt.ion()
 
     fig, ax = plt.subplots()
 
     # Random/noisy data points
-    ax.scatter(
+    points = ax.scatter(
         x_list,
         y_list,
         label="Random training points"
@@ -131,37 +131,37 @@ def plot(x_list, y_list, function):
     # Give you time to initially see the points/function
     plt.pause(1)
 
-    return fig, learned_line, x_line
+    return fig, points, learned_line, x_line
 
 def run():
     #x_list = gen_XY(func_x, 10)[1]
     #y_list = gen_XY(func_x, 10)[2]
-    x_list, y_list = plain_gen_XY(func_x, 10)
+    x_list, y_list = noisy_gen_XY(func_x, 10)
 
     m = 0 #initial guess
-    b = 0 #initial guess
+    b = 0  #initial guess
 
-    learning_rate = 0.001
+    learning_rate = 0.01
 
-    epochs = 10000
+    epochs = 5000
     epochs_passed = 0
-    fig, learned_line, x_line = plot(x_list, y_list, func_x)
+    fig, points, learned_line, x_line = plot(x_list, y_list, func_x)
     for i in range(epochs):
         predictions = genPredictions(x_list, m, b)
         current_loss = loss_mse(predictions, y_list)
         m_gradient, b_gradient = gradients(x_list, y_list, predictions)
         m = m - (learning_rate*m_gradient)
         b = b - (learning_rate*b_gradient)
-        epochs_passed += 1
+        
 
         if i % 10 == 0:
+            points.set_offsets(np.column_stack((x_list, y_list)))
             learned_line.set_ydata(m * x_line + b)
             fig.canvas.draw_idle()
             fig.canvas.flush_events()
             plt.pause(0.01)
-
-        print(f'Epoch: {epochs_passed}  |  Loss MSE: {current_loss:.30f}')
-
+            print(f'Epoch: {epochs_passed}  |  Loss MSE: {current_loss:.30f}')
+        epochs_passed += 1
     print(f'Final | m: {m:.20f} | b: {b:.20f} |')
 
 if __name__ == "__main__":
