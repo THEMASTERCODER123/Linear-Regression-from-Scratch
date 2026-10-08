@@ -141,9 +141,9 @@ def run():
     m = 0 #initial guess
     b = 0  #initial guess
 
-    learning_rate = 0.01
+    learning_rate = 0.001
 
-    epochs = 5000
+    epochs = 10000
     epochs_passed = 0
     fig, points, learned_line, x_line = plot(x_list, y_list, func_x)
     for i in range(epochs):
@@ -153,15 +153,16 @@ def run():
         m = m - (learning_rate*m_gradient)
         b = b - (learning_rate*b_gradient)
         
-
+        
         if i % 10 == 0:
             points.set_offsets(np.column_stack((x_list, y_list)))
             learned_line.set_ydata(m * x_line + b)
             fig.canvas.draw_idle()
             fig.canvas.flush_events()
             plt.pause(0.01)
+            epochs_passed += 10
             print(f'Epoch: {epochs_passed}  |  Loss MSE: {current_loss:.30f}')
-        epochs_passed += 1
+        
     print(f'Final | m: {m:.20f} | b: {b:.20f} |')
 
 if __name__ == "__main__":
